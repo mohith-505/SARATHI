@@ -1,6 +1,6 @@
 paths:
-  workspace: "~/sarathi/workspace"
-  profile: "~/sarathi/profile.md"
+  workspace: "workspace"
+  profile: "profile.md"
   db: "data/memory.db"
 
 models:

@@ -1,0 +1,23 @@
+tiers:
+  read_file: T0
+  list_dir: T0
+  write_file: T1        # workspace only; outside -> T2
+  python_exec: T2
+  run_shell: T2
+
+paths:
+  allow_read:  ["workspace", "projects"]
+  allow_write: ["workspace"]
+  deny_roots:  [".ssh", ".aws", ".gnupg", ".config/gcloud"]
+  deny_globs:  ["*.pem", "*.key", "id_*", ".env", "*.sqlite-journal",
+                "*/src/sarathi/security/*"]   # <- the policy cannot edit itself
+
+shell:
+  allow_binaries: [ls, cat, grep, find, head, tail, wc, python3, pytest, git, rg]
+  deny_patterns: ["rm -rf", "sudo", "chmod 777", "curl", "wget", "| sh", "|sh",
+                  "dd ", "mkfs", ">/dev/", "eval "]
+
+budgets:
+  max_steps: 15
+  max_inr_per_run: 20
+  max_inr_per_day: 100
