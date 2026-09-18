@@ -1,0 +1,31 @@
+paths:
+  workspace: "~/sarathi/workspace"
+  profile: "~/sarathi/profile.md"
+  db: "data/memory.db"
+
+models:
+  local:
+    - name: "qwen2.5:3b"
+      provider: "ollama"
+      supports_tools: true
+      max_context: 8192
+      is_local: true
+      weights_vram_mb: 2200
+      kv_bytes_per_token: 131072
+  cloud:
+    mid:
+      name: "google/gemini-flash-1.5"
+      provider: "openai_compat"
+      supports_tools: true
+      max_context: 1000000
+      is_local: false
+      inr_per_1k_in: 0.003
+      inr_per_1k_out: 0.012
+    reasoning:
+      name: "anthropic/claude-3-haiku"
+      provider: "openai_compat"
+      is_local: false
+    coding:
+      name: "anthropic/claude-3.5-sonnet"
+      provider: "openai_compat"
+      is_local: false
