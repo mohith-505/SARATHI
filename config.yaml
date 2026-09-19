@@ -5,7 +5,7 @@ paths:
 
 models:
   local:
-    - name: "qwen2.5:3b"
+    - name: "qwen3:4b"
       provider: "ollama"
       supports_tools: true
       max_context: 8192
