@@ -89,3 +89,21 @@ def chat(model: str = typer.Option("local", help="Model to use (local, mid, reas
 
 if __name__ == "__main__":
     app()
+import yaml
+from rich.table import Table
+
+@app.command(name="eval")
+def run_eval():
+    '''Run the eval suite.'''
+    with open('evals/suites/core.yaml', 'r') as f:
+        suites = yaml.safe_load(f)
+    
+    table = Table(title="Eval Results")
+    table.add_column("ID", style="cyan")
+    table.add_column("Goal", style="magenta")
+    table.add_column("Status", style="green")
+    
+    for suite in suites:
+        table.add_row(suite['id'], suite['goal'], "[yellow]SKIP (Mock)[/yellow]")
+    
+    console.print(table)
