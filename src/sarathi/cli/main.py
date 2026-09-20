@@ -104,8 +104,8 @@ async def async_chat(model_key: str):
             agent = Agent(client, spec, registry, gateway, system_prompt)
             ctx = Context(session_id=session_id, session_tier=Tier.T2)
             
-            with console.status(f"Agent running ({spec.name})..."):
-                res = await agent.run(user_input, ctx)
+            console.print(f"[dim]Agent running ({spec.name})...[/dim]")
+            res = await agent.run(user_input, ctx)
                 
             if res.status == "done":
                 console.print(f"[bold purple]Sarathi:[/bold purple] {res.content}")
