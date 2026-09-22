@@ -1,0 +1,16 @@
+# Default SARATHI configuration.
+# Priority (highest → lowest): CLI args > SARATHI_* env vars > .env > this file > built-in defaults.
+
+[model]
+provider = "ollama"
+name = "llama3.1:8b"
+base_url = "http://localhost:11434"
+temperature = 0.2
+request_timeout = 120.0
+
+[agent]
+max_history_messages = 40
+
+[logging]
+level = "INFO"
+file = "logs/sarathi.log"
