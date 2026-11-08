@@ -1,0 +1,1 @@
+"""SARATHI Storage module."""

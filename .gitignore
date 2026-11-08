@@ -32,3 +32,22 @@ config/local.toml
 .idea/
 *.swp
 .DS_Store
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+.vite/
+
+# Archives & Installers
+*.zip
+*.tar.gz
+*.exe
+
+# Databases & Runtime Data
+*.db
+*.sqlite
+*.sqlite3
+
+# External References & Scratch
+references/
+scratch/

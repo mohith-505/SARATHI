@@ -96,7 +96,7 @@ class OllamaProvider(AIProvider):
             ) from e
 
         try:
-            return data["message"]["content"]
+            return str(data["message"]["content"])
         except (KeyError, TypeError) as e:
             raise ModelResponseError(
                 f"Malformed Ollama chat response: {json.dumps(data)[:200]}"

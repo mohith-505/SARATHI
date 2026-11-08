@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from core.config.settings import SarathiSettings
 
@@ -10,7 +11,7 @@ from core.config.settings import SarathiSettings
 def test_defaults_when_no_file():
     s = SarathiSettings.load(Path("does-not-exist.toml"))
     assert s.model.provider == "ollama"
-    assert s.model.name == "llama3.1:8b"
+    assert s.model.name == "qwen3:4b"
     assert s.agent.max_history_messages >= 4
 
 
@@ -40,5 +41,5 @@ def test_env_overrides_toml(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
 def test_invalid_temperature_rejected(tmp_path: Path):
     cfg = tmp_path / "c.toml"
     cfg.write_text('[model]\ntemperature = 5.0\n')
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         SarathiSettings.load(cfg)

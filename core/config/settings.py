@@ -1,8 +1,8 @@
 """Configuration loading for SARATHI.
 
 Priority (highest to lowest):
-    1. Explicit init kwargs (not used by the CLI in V0.1)
-    2. Environment variables prefixed with ``SARATHI_`` (nested via ``__``)
+    1. Explicit init kwargs
+    2. Environment variables prefixed ``SARATHI_`` (nested via ``__``)
     3. ``.env`` file
     4. TOML file passed to ``SarathiSettings.load(path)``
     5. Built-in defaults
@@ -24,7 +24,7 @@ from pydantic_settings import (
 
 class ModelConfig(BaseModel):
     provider: Literal["ollama"] = "ollama"
-    name: str = "llama3.1:8b"
+    name: str = "qwen3:4b"
     base_url: str = "http://localhost:11434"
     temperature: float = Field(default=0.2, ge=0.0, le=2.0)
     request_timeout: float = Field(default=120.0, gt=0.0)
@@ -32,6 +32,13 @@ class ModelConfig(BaseModel):
 
 class AgentConfig(BaseModel):
     max_history_messages: int = Field(default=40, ge=4)
+    max_tool_iterations: int = Field(default=5, ge=1, le=20)
+
+
+class ToolsConfig(BaseModel):
+    enabled: bool = True
+    web_search_enabled: bool = True
+    allowed_roots: list[Path] = Field(default_factory=lambda: [Path.home(), Path.cwd()])
 
 
 class LoggingConfig(BaseModel):
@@ -39,9 +46,13 @@ class LoggingConfig(BaseModel):
     file: Path | None = Path("logs/sarathi.log")
 
 
-class _TomlSource(PydanticBaseSettingsSource):
-    """Loads settings from a TOML file. Lowest meaningful priority."""
+class MemoryConfig(BaseModel):
+    enabled: bool = True
+    vault_path: Path = Path("data/memory")
+    auto_inject: bool = True
 
+
+class _TomlSource(PydanticBaseSettingsSource):
     def __init__(self, settings_cls: type[BaseSettings], path: Path | None) -> None:
         super().__init__(settings_cls)
         self._data: dict[str, Any] = {}
@@ -70,7 +81,9 @@ class SarathiSettings(BaseSettings):
 
     model: ModelConfig = Field(default_factory=ModelConfig)
     agent: AgentConfig = Field(default_factory=AgentConfig)
+    tools: ToolsConfig = Field(default_factory=ToolsConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
+    memory: MemoryConfig = Field(default_factory=MemoryConfig)
 
     @classmethod
     def settings_customise_sources(
@@ -90,8 +103,7 @@ class SarathiSettings(BaseSettings):
         )
 
     @classmethod
-    def load(cls, config_path: Path | None = None) -> "SarathiSettings":
-        """Load settings, optionally seeding defaults from a TOML file."""
+    def load(cls, config_path: Path | None = None) -> SarathiSettings:
         global _TOML_PATH
         _TOML_PATH = config_path
         return cls()

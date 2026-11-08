@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from enum import Enum
+from datetime import UTC, datetime
+from enum import StrEnum
 from typing import Any
 
 
-class Role(str, Enum):
+class Role(StrEnum):
     SYSTEM = "system"
     USER = "user"
     ASSISTANT = "assistant"
@@ -22,7 +22,7 @@ class Message:
     role: Role
     content: str
     name: str | None = None
-    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = field(default_factory=lambda: datetime.now(UTC))
     metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -54,6 +54,11 @@ class Conversation:
 
     def add_assistant(self, content: str) -> Message:
         msg = Message(role=Role.ASSISTANT, content=content)
+        self.add(msg)
+        return msg
+
+    def add_tool(self, name: str, content: str) -> Message:
+        msg = Message(role=Role.TOOL, content=content, name=name)
         self.add(msg)
         return msg
 

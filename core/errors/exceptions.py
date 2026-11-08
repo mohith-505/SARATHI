@@ -30,3 +30,23 @@ class ModelResponseError(ModelError):
 
 class ProviderConnectionError(ModelError):
     """SARATHI could not establish a connection to the provider."""
+
+
+class ToolError(SarathiError):
+    """Base class for tool-related failures."""
+
+
+class ToolNotFoundError(ToolError):
+    """Requested tool name is not registered."""
+
+
+class ToolPermissionError(ToolError, PermissionError):
+    """Tool execution was blocked by the permission system."""
+
+
+class ToolValidationError(ToolError):
+    """Tool arguments failed schema validation."""
+
+
+class PathAccessError(ToolError, PermissionError):
+    """A filesystem path was outside the allowed roots."""

@@ -1,6 +1,13 @@
+param (
+    [switch]$TerminalOnly = $false
+)
+
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 
-. .\.venv\Scripts\Activate.ps1
-sarathi chat @args
+if ($TerminalOnly) {
+    & ".\dev.ps1" -TerminalOnly
+} else {
+    & ".\dev.ps1"
+}

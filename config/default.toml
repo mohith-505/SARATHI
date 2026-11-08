@@ -1,16 +1,29 @@
 # Default SARATHI configuration.
-# Priority (highest → lowest): CLI args > SARATHI_* env vars > .env > this file > built-in defaults.
+# Priority: CLI args > SARATHI_* env > .env > this file > defaults.
 
 [model]
 provider = "ollama"
-name = "llama3.1:8b"
+name = "qwen3:4b"
 base_url = "http://localhost:11434"
 temperature = 0.2
 request_timeout = 120.0
 
 [agent]
 max_history_messages = 40
+max_tool_iterations = 5
+
+[tools]
+enabled = true
+web_search_enabled = true
+# Paths that filesystem tools may read/write under.
+# Override in .env like: SARATHI_TOOLS__ALLOWED_ROOTS='["C:/Users/me/projects"]'
+allowed_roots = ["~", "."]
 
 [logging]
 level = "INFO"
 file = "logs/sarathi.log"
+
+[memory]
+enabled = true
+vault_path = "data/memory"
+auto_inject = true

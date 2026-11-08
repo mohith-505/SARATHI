@@ -8,7 +8,7 @@ Write-Host "Ruff..." -ForegroundColor Cyan
 ruff check .
 
 Write-Host "MyPy..." -ForegroundColor Cyan
-mypy core models apps
+mypy core models apps tools security
 
 Write-Host "Pytest..." -ForegroundColor Cyan
 pytest

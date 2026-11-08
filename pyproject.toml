@@ -1,7 +1,7 @@
 [project]
 name = "sarathi"
-version = "0.1.0"
-description = "SARATHI — Personal AI Operating Companion (V0.1 Core Brain)"
+version = "0.2.0"
+description = "SARATHI — Personal AI Operating Companion (V0.2 Tool System)"
 requires-python = ">=3.11"
 readme = "README.md"
 license = { text = "MIT" }
@@ -13,6 +13,16 @@ dependencies = [
     "pydantic-settings>=2.3",
     "typer>=0.12",
     "rich>=13.7",
+    "psutil>=5.9",
+    "ddgs>=9.0",
+    "google-api-python-client>=2.0",
+    "google-auth-httplib2>=0.2",
+    "google-auth-oauthlib>=1.2",
+    "fastapi>=0.111",
+    "uvicorn>=0.30",
+    "websockets>=12.0",
+    "aiosqlite>=0.20",
+    "sqlalchemy>=2.0",
 ]
 
 [project.optional-dependencies]
@@ -34,15 +44,17 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 include = [
     "apps*", "core*", "models*", "tools*", "memory*",
-    "voice*", "vision*", "ui*", "security*",
+    "voice*", "vision*", "ui*", "security*", "connectors*",
 ]
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+extend-exclude = ["scratch", "references", "starter", "starter-v02"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "B", "UP", "ASYNC"]
+ignore = ["B008", "B904"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -54,3 +66,4 @@ python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
+plugins = ["pydantic.mypy"]

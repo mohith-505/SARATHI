@@ -1,11 +1,11 @@
-"""SARATHI's system identity.
-
-This is deliberately close to the identity defined in the project brief.
-As capabilities are added (tools, verification, memory), this prompt will
-be expanded, but the non-negotiable rules must remain.
-"""
+"""SARATHI system identity + tool instructions."""
 
 from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from tools.registry import ToolRegistry
 
 SARATHI_SYSTEM_PROMPT = """\
 You are SARATHI, a personal AI operating companion.
@@ -32,9 +32,38 @@ Hard rules — never violate these:
 
 If you cannot do something, say so plainly and, when possible, suggest a
 concrete alternative.
-
-You are currently running in V0.1 (Core Brain). You have no tools, no memory
-persistence, no voice, no vision, and no computer control. If the user asks
-for something that requires these, say so honestly and explain that it will
-arrive in a future version. Do not simulate any capability you do not have.
 """
+
+TOOL_INSTRUCTIONS = """\
+
+You have access to the following tools:
+
+{tool_list}
+
+To use a tool, reply with a SINGLE JSON object on its own, with no other text
+around it:
+
+{{"tool": "<tool_name>", "arguments": {{ ... }}}}
+
+Rules:
+1. One tool call per reply.
+2. After you emit a tool call, SARATHI will run it and reply with a message
+   from role "tool" containing the JSON result.
+3. When you have enough information, respond with plain text and NO JSON
+   tool call.
+4. Never invent tool results. If you did not see a tool result, do not claim
+   to know its output.
+5. If no tool is needed, just answer normally.
+6. If a tool result is an error, say so honestly.
+"""
+
+
+def build_system_prompt(
+    registry: ToolRegistry | None, memory_context: str | None = None
+) -> str:
+    base = SARATHI_SYSTEM_PROMPT
+    if memory_context:
+        base += f"\n\n# Memory & User Context:\n{memory_context}\n"
+    if registry is not None and len(registry) > 0:
+        base += TOOL_INSTRUCTIONS.format(tool_list=registry.describe_for_llm())
+    return base
